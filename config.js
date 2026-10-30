@@ -10,9 +10,9 @@ window.RENDEVO_CONFIG = {
   timezone: "Africa/Algiers",
   locale: "fr-DZ",
   currency: "DZD",
-  /* Paste the deployed Apps Script /exec URL here when the backend is ready. */
-  apiUrl: "",
-  /* Keep false until the backend is deployed and tested. */
+  /* Apps Script backend */
+  apiUrl: "https://script.google.com/macros/s/AKfycbySHoeZmIgkz43svYY6TbcegcnT1VqO7oyMBMljQGDbN8johKD7UnOx5I-SAQIKLBcBGQ/exec",
+  /* Keep disabled until the live booking flow is tested end to end. */
   bookingEnabled: false,
   /* Public clinic schedule is informational until the backend confirms availability. */
   schedule: { days: ["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Samedi"], note: "Les horaires sont confirmés par le cabinet." },
