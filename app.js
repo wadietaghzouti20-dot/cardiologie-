@@ -124,6 +124,15 @@
     }
   }
 
+  const todayParts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: cfg.timezone || "Africa/Algiers",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(new Date());
+  const todayValues = Object.fromEntries(todayParts.map(part => [part.type, part.value]));
+  const todayStr = `${todayValues.year}-${todayValues.month}-${todayValues.day}`;
+
   dateInput.min = todayStr;
   dateInput.addEventListener("change", loadAvailableSlots);
 
