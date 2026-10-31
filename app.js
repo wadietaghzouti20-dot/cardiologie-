@@ -45,61 +45,87 @@
 
   const dateInput = $("#appointment-date"), timeInput = $("#appointment-time");
   const timeStatus = $("#time-status");
+  let availabilityLoading = false;
+  let availabilityRequest = 0;
+  let lastSlotDate = "";
+  let lastSlotService = "";
 
-  function loadTimeOptions() {
+  async function loadAvailableSlots() {
+    const requestId = ++availabilityRequest;
     const date = dateInput.value;
+    const service = value("service");
+    const previousSelection = date === lastSlotDate && service === lastSlotService ? timeInput.value : "";
     timeInput.replaceChildren();
     const placeholder = document.createElement("option");
     placeholder.value = "";
-    if (!date) {
+
+    if (!date || !service) {
       placeholder.textContent = "Choisissez d’abord une date";
       timeInput.append(placeholder);
       timeInput.disabled = true;
-      timeStatus.textContent = "Choisissez une date pour afficher les horaires proposés.";
+      timeStatus.textContent = "Choisissez une date pour afficher les heures disponibles.";
+      availabilityLoading = false;
       return;
     }
-    const selectedDate = new Date(date + "T12:00:00");
-    const day = selectedDate.getDay();
-    if (day === 5) {
-      placeholder.textContent = "Cabinet fermé le vendredi";
-      timeInput.append(placeholder);
-      timeInput.disabled = true;
-      timeStatus.textContent = "Veuillez choisir un autre jour.";
-      return;
-    }
-    const opening = day === 6 ? 10 * 60 : 8 * 60;
-    const closing = day === 6 ? 16 * 60 : 17 * 60;
-    const now = new Date();
-    const isToday = date === todayStr;
-    const firstMinute = isToday ? Math.max(opening, Math.ceil((now.getHours() * 60 + now.getMinutes()) / 15) * 15) : opening;
-    const slots = [];
-    for (let minute = firstMinute; minute + 30 <= closing; minute += 15) {
-      const hours = String(Math.floor(minute / 60)).padStart(2, "0");
-      const minutes = String(minute % 60).padStart(2, "0");
-      slots.push(hours + ":" + minutes);
-    }
-    if (!slots.length) {
-      placeholder.textContent = "Aucun horaire restant pour cette date";
-      timeInput.append(placeholder);
-      timeInput.disabled = true;
-      timeStatus.textContent = "Choisissez une autre date pour continuer.";
-      return;
-    }
-    placeholder.textContent = "Sélectionnez une heure";
+
+    placeholder.textContent = "Chargement des créneaux…";
     timeInput.append(placeholder);
-    slots.forEach(slot => {
-      const option = document.createElement("option");
-      option.value = slot;
-      option.textContent = slot;
-      timeInput.append(option);
-    });
-    timeInput.disabled = false;
-    timeStatus.textContent = "Horaires proposés selon les heures d’ouverture du cabinet. Le créneau sera vérifié par le cabinet.";
+    timeInput.disabled = true;
+    timeStatus.textContent = "Recherche des heures disponibles…";
+    availabilityLoading = true;
+
+    try {
+      if (!cfg.apiUrl || !/^https:\/\/script\.google\.com\/macros\/s\//.test(cfg.apiUrl)) {
+        throw new Error("La connexion au service de réservation n’est pas configurée.");
+      }
+      const response = await fetch(cfg.apiUrl, {
+        method: "POST",
+        redirect: "follow",
+        headers: {"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify({action:"availability", preferredDate:date, service:service})
+      });
+      if (!response.ok) throw new Error("Le service de réservation est temporairement indisponible.");
+      const result = await response.json();
+      if (!result || result.success !== true) {
+        throw new Error(result && result.message ? result.message : "Impossible de charger les créneaux.");
+      }
+      if (requestId !== availabilityRequest) return;
+
+      const slots = Array.isArray(result.availableSlots) ? result.availableSlots : [];
+      timeInput.replaceChildren();
+      const firstOption = document.createElement("option");
+      firstOption.value = "";
+      firstOption.textContent = slots.length ? "Sélectionnez une heure" : "Aucun créneau disponible";
+      timeInput.append(firstOption);
+      slots.forEach(slot => {
+        const option = document.createElement("option");
+        option.value = slot;
+        option.textContent = slot;
+        if (slot === previousSelection) option.selected = true;
+        timeInput.append(option);
+      });
+      timeInput.disabled = slots.length === 0;
+      lastSlotDate = date;
+      lastSlotService = service;
+      timeStatus.textContent = result.message || (slots.length
+        ? "Ces créneaux sont disponibles au moment de la vérification."
+        : "Aucun créneau disponible. Essayez une autre date.");
+    } catch (error) {
+      if (requestId !== availabilityRequest) return;
+      timeInput.replaceChildren();
+      const errorOption = document.createElement("option");
+      errorOption.value = "";
+      errorOption.textContent = "Créneaux indisponibles";
+      timeInput.append(errorOption);
+      timeInput.disabled = true;
+      timeStatus.textContent = error instanceof Error ? error.message : "Impossible de charger les créneaux.";
+    } finally {
+      if (requestId === availabilityRequest) availabilityLoading = false;
+    }
   }
-  dateInput.addEventListener("change", loadTimeOptions);
-  const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-  const todayStr = today.toISOString().slice(0,10);
+
   dateInput.min = todayStr;
+  dateInput.addEventListener("change", loadAvailableSlots);
 
   function showAlert(message, type = "error") {
     alertBox.textContent = message; alertBox.className = "form-alert " + type; alertBox.hidden = false;
@@ -112,7 +138,8 @@
     if (n === 2) {
       if (!dateInput.value) return "Choisissez une date souhaitée.";
       if (dateInput.value < todayStr) return "La date souhaitée doit être aujourd'hui ou dans le futur.";
-      if (!timeInput.value) return "Choisissez une heure précise pour votre rendez-vous.";
+      if (availabilityLoading) return "Veuillez attendre le chargement des créneaux disponibles.";
+      if (!timeInput.value) return "Veuillez sélectionner une heure disponible avant de continuer.";
     }
     if (n === 3) {
       if (!$("#patient-name").value.trim()) return "Indiquez votre nom et prénom.";
@@ -132,6 +159,7 @@
     $("#back-button").hidden = n === 1;
     $("#continue-button").hidden = n === totalSteps;
     $("#submit-button").hidden = n !== totalSteps;
+    if (n === 2) loadAvailableSlots();
     if (n === totalSteps) renderReview();
     clearAlert();
     $("#form-heading").textContent = n === 1 ? "Commençons" : n === 2 ? "Vos disponibilités" : n === 3 ? "Vos coordonnées" : "Dernière vérification";
