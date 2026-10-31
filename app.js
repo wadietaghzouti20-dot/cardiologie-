@@ -44,6 +44,59 @@
   });
 
   const dateInput = $("#appointment-date"), timeInput = $("#appointment-time");
+  const timeStatus = $("#time-status");
+
+  function loadTimeOptions() {
+    const date = dateInput.value;
+    timeInput.replaceChildren();
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    if (!date) {
+      placeholder.textContent = "Choisissez d’abord une date";
+      timeInput.append(placeholder);
+      timeInput.disabled = true;
+      timeStatus.textContent = "Choisissez une date pour afficher les horaires proposés.";
+      return;
+    }
+    const selectedDate = new Date(date + "T12:00:00");
+    const day = selectedDate.getDay();
+    if (day === 5) {
+      placeholder.textContent = "Cabinet fermé le vendredi";
+      timeInput.append(placeholder);
+      timeInput.disabled = true;
+      timeStatus.textContent = "Veuillez choisir un autre jour.";
+      return;
+    }
+    const opening = day === 6 ? 10 * 60 : 8 * 60;
+    const closing = day === 6 ? 16 * 60 : 17 * 60;
+    const now = new Date();
+    const isToday = date === todayStr;
+    const firstMinute = isToday ? Math.max(opening, Math.ceil((now.getHours() * 60 + now.getMinutes()) / 15) * 15) : opening;
+    const slots = [];
+    for (let minute = firstMinute; minute + 30 <= closing; minute += 15) {
+      const hours = String(Math.floor(minute / 60)).padStart(2, "0");
+      const minutes = String(minute % 60).padStart(2, "0");
+      slots.push(hours + ":" + minutes);
+    }
+    if (!slots.length) {
+      placeholder.textContent = "Aucun horaire restant pour cette date";
+      timeInput.append(placeholder);
+      timeInput.disabled = true;
+      timeStatus.textContent = "Choisissez une autre date pour continuer.";
+      return;
+    }
+    placeholder.textContent = "Sélectionnez une heure";
+    timeInput.append(placeholder);
+    slots.forEach(slot => {
+      const option = document.createElement("option");
+      option.value = slot;
+      option.textContent = slot;
+      timeInput.append(option);
+    });
+    timeInput.disabled = false;
+    timeStatus.textContent = "Horaires proposés selon les heures d’ouverture du cabinet. Le créneau sera vérifié par le cabinet.";
+  }
+  dateInput.addEventListener("change", loadTimeOptions);
   const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
   const todayStr = today.toISOString().slice(0,10);
   dateInput.min = todayStr;
