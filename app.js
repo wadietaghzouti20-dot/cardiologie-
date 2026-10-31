@@ -42,7 +42,7 @@
     });
   });
 
-  const dateInput = $("#appointment-date"), alternateInput = $("#alternate-date");
+  const dateInput = $("#appointment-date"), timeInput = $("#appointment-time"), alternateInput = $("#alternate-date"), alternateTimeInput = $("#alternate-time");
   const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
   const todayStr = today.toISOString().slice(0,10);
   dateInput.min = todayStr; alternateInput.min = todayStr;
@@ -60,7 +60,10 @@
     if (n === 2) {
       if (!dateInput.value) return "Choisissez une date souhaitée.";
       if (dateInput.value < todayStr) return "La date souhaitée doit être aujourd'hui ou dans le futur.";
+      if (!timeInput.value) return "Choisissez une heure précise pour votre rendez-vous.";
       if (alternateInput.value && alternateInput.value < dateInput.value) return "La seconde date doit être égale ou postérieure à la première.";
+      if (alternateInput.value && !alternateTimeInput.value) return "Indiquez aussi une heure pour votre seconde date, ou effacez cette date.";
+      if (!alternateInput.value && alternateTimeInput.value) return "Indiquez une seconde date ou effacez l’heure alternative.";
     }
     if (n === 3) {
       if (!$("#patient-name").value.trim()) return "Indiquez votre nom et prénom.";
@@ -91,8 +94,9 @@
     const rows = [
       ["Motif", value("service") + (value("otherReason") ? " — "+value("otherReason") : "")],
       ["Date souhaitée", prettyDate(value("date"))],
-      ["Préférence horaire", value("timePreference") || "Indifférent"],
+      ["Heure souhaitée", value("time") || "Non précisée"],
       ["Autre date possible", value("alternateDate") ? prettyDate(value("alternateDate")) : "Non précisée"],
+      ["Autre heure possible", value("alternateTime") || "Non précisée"],
       ["Nom", value("name")], ["Téléphone", value("phone")], ["E-mail", value("email") || "Non renseignée"],
       ["Note au secrétariat", value("note") || "Aucune"]
     ];
@@ -118,7 +122,7 @@
     if (!cfg.apiUrl || !cfg.bookingEnabled) return showAlert("La réservation n'est pas encore activée. Aucune demande n'a été envoyée.", "info");
     const submit = $("#submit-button"); submit.disabled = true; submit.textContent = "Envoi en cours…";
     try {
-      const payload = {action:"createAppointment", specialty:cfg.specialty, service:value("service"), otherReason:value("otherReason"), date:value("date"), timePreference:value("timePreference"), alternateDate:value("alternateDate"), name:value("name").trim(), phone:value("phone").trim(), email:value("email").trim(), note:value("note").trim(), consent:true, timezone:cfg.timezone};
+      const payload = {action:"createAppointment", specialty:cfg.specialty, service:value("service"), otherReason:value("otherReason"), date:value("date"), time:value("time"), alternateDate:value("alternateDate"), alternateTime:value("alternateTime"), name:value("name").trim(), phone:value("phone").trim(), email:value("email").trim(), note:value("note").trim(), consent:true, timezone:cfg.timezone};
       const response = await fetch(cfg.apiUrl, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(payload), redirect:"follow"});
       const result = await response.json();
       if (!response.ok || !result.success) throw new Error(result.message || "Impossible de transmettre la demande.");
