@@ -42,7 +42,7 @@
       </section>
       <section class="form-step" data-step="2" aria-labelledby="step-title-2" hidden>
         <p class="step-label">02 / DISPONIBILITÉS</p><h3 id="step-title-2">Quand souhaitez-vous venir ?</h3><p class="step-description">Choisissez une date et une heure précises. Le cabinet vérifiera le créneau avant de confirmer votre rendez-vous.</p>
-        <div class="field-grid"><div class="field-group"><label for="appointment-date">Date souhaitée</label><input id="appointment-date" name="date" type="date" required><small class="field-hint">Choisissez le jour souhaité.</small></div><div class="field-group"><label for="appointment-time">Heure souhaitée</label><input id="appointment-time" name="time" type="time" required step="900"><small class="field-hint">Heure exacte (format 24 h).</small></div></div>
+        <div class="field-group"><label for="appointment-date">Date souhaitée</label><input id="appointment-date" name="date" type="date" required><small class="field-hint">Choisissez le jour souhaité.</small></div><div class="field-group"><label for="appointment-time">Heure souhaitée</label><select id="appointment-time" name="time" required disabled><option value="">Choisissez d’abord une date</option></select><small class="field-hint" id="time-status" aria-live="polite">Choisissez une date pour afficher les horaires proposés.</small></div>
       </section>
       <section class="form-step" data-step="3" aria-labelledby="step-title-3" hidden>
         <p class="step-label">03 / VOS COORDONNÉES</p><h3 id="step-title-3">Comment pouvons-nous vous contacter ?</h3><p class="step-description">Ces informations servent à traiter votre demande et à vous envoyer les informations du rendez-vous.</p>
