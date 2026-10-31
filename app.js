@@ -134,6 +134,7 @@
   const todayStr = `${todayValues.year}-${todayValues.month}-${todayValues.day}`;
 
   dateInput.min = todayStr;
+  dateInput.addEventListener("input", loadAvailableSlots);
   dateInput.addEventListener("change", loadAvailableSlots);
 
   function showAlert(message, type = "error") {
