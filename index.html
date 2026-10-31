@@ -3,62 +3,121 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#edf5f5">
-  <meta name="description" content="Prise de rendez-vous en ligne en cardiologie. Choisissez le motif de consultation et vos disponibilités.">
-  <title>Prendre rendez-vous | Cardiologie</title>
+  <meta name="theme-color" content="#f5f7f8">
+  <meta name="description" content="Réservation en ligne — Cardiologie">
+  <title>Réservation en ligne | Cardiologie</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <script src="config.js" defer></script>
-  <script src="app.js?v=20261031-2" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20261031-rebuild2">
+  <script src="config.js?v=20261031-rebuild2" defer></script>
+  <script src="app.js?v=20261031-rebuild2" defer></script>
 </head>
 <body>
-<a class="skip-link" href="#booking">Passer au formulaire</a>
-<header class="site-header">
-  <a class="brand" href="./" aria-label="Accueil du cabinet">
-    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 7v26M7 20h26" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg></span>
-    <span class="brand-copy"><strong id="clinic-name">Cabinet Cardiologie</strong><small>RENDEVO · Rendez-vous en ligne</small></span>
-  </a>
-  <a class="header-contact" id="header-phone" href="#" aria-label="Contacter le cabinet"><span class="contact-icon" aria-hidden="true">↗</span><span><small>Besoin d'aide ?</small><strong>Nous contacter</strong></span></a>
-</header>
-<main id="booking" class="page-shell">
-  <section class="intro" aria-labelledby="page-title">
-    <p class="eyebrow"><span class="eyebrow-dot"></span> RENDEZ-VOUS EN LIGNE</p>
-    <h1 id="page-title">Votre santé,<br><span>au bon rythme.</span></h1>
-    <p class="intro-copy">Un suivi cardiovasculaire organisé, en toute simplicité. Choisissez votre motif, vos disponibilités et transmettez votre demande au cabinet en quelques étapes.</p>
-    <div class="trust-row"><span><span class="trust-check" aria-hidden="true">✓</span> Parcours simple</span><span><span class="trust-check" aria-hidden="true">✓</span> Informations confidentielles</span></div>
-    <div class="intro-note"><span class="note-icon" aria-hidden="true">i</span><p>Ce formulaire sert uniquement à organiser votre rendez-vous. En cas d'urgence médicale, contactez les services d'urgence plutôt que d'attendre une réponse en ligne.</p></div>
-  </section>
-  <section class="booking-card" aria-labelledby="form-heading">
-    <div class="card-topline"><div><p class="card-kicker">RÉSERVATION AU CABINET</p><h2 id="form-heading">Commençons</h2></div><span class="step-counter" id="step-counter">Étape 1 sur 4</span></div>
-    <div class="progress-track" id="progress-track" role="progressbar" aria-label="Progression du formulaire" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1"><span id="progress-fill"></span></div>
-    <div id="form-alert" class="form-alert" role="alert" hidden></div>
-    <form id="appointment-form" novalidate>
-      <section class="form-step is-active" data-step="1" aria-labelledby="step-title-1">
-        <p class="step-label">01 / MOTIF</p><h3 id="step-title-1">Quel est le motif de votre rendez-vous ?</h3><p class="step-description">Choisissez le motif le plus proche de votre besoin. Évitez de saisir des détails médicaux personnels.</p>
-        <div class="choice-grid" id="service-options"></div>
-        <div class="field-group" id="other-reason-wrap" hidden><label for="other-reason">Précision facultative</label><input id="other-reason" name="otherReason" maxlength="120" placeholder="Précision courte, sans détail médical"></div>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="RENDEVO Cardiologie">
+      <span class="brand-mark" aria-hidden="true">+</span>
+      <span class="brand-copy"><strong id="clinic-name">Cabinet Cardiologie</strong><small>RENDEVO · Réservation en ligne</small></span>
+    </a>
+    <span class="header-label">RÉSERVATION EN LIGNE</span>
+  </header>
+
+  <main class="page-shell">
+    <section class="booking-card" aria-labelledby="form-heading">
+      <div class="card-topline">
+        <div><p class="card-kicker">RENDEZ-VOUS AU CABINET</p><h1 id="form-heading">Commençons</h1></div>
+        <span class="step-counter" id="step-counter">Étape 1 sur 5</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="Progression du formulaire" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" id="progress-track"><span id="progress-fill"></span></div>
+      <div id="form-alert" class="form-alert" role="alert" hidden></div>
+
+      <form id="appointment-form" novalidate>
+        <section class="form-step is-active" data-step="1">
+          <p class="step-label">01 / MOTIF DE CONSULTATION</p>
+          <h2>Quel est le motif de votre rendez-vous ?</h2>
+          <p class="step-description">Sélectionnez le motif qui correspond le mieux à votre demande.</p>
+          <div class="choice-grid" id="service-options"></div>
+          <div class="field-group" id="other-reason-wrap" hidden>
+            <label for="other-reason">Précisez votre demande</label>
+            <input id="other-reason" name="otherReason" maxlength="120" placeholder="Précision facultative">
+          </div>
+        </section>
+
+        <section class="form-step" data-step="2" hidden>
+          <p class="step-label">02 / DATE ET HORAIRE</p>
+          <h2>Quand êtes-vous disponible ?</h2>
+          <p class="step-description">Choisissez une date pour afficher les horaires réellement disponibles.</p>
+          <div class="field-group">
+            <label for="appointment-date">Date souhaitée <span class="required">*</span></label>
+            <input id="appointment-date" name="date" type="date" required>
+            <small class="field-hint">Les dates passées ne sont pas acceptées.</small>
+          </div>
+          <div class="field-group">
+            <label for="appointment-time">Heure disponible <span class="required">*</span></label>
+            <select id="appointment-time" name="time" required disabled>
+              <option value="">Choisissez d’abord une date</option>
+            </select>
+            <small class="field-hint" id="time-status" aria-live="polite">Choisissez une date pour afficher les heures disponibles.</small>
+          </div>
+        </section>
+
+        <section class="form-step" data-step="3" hidden>
+          <p class="step-label">03 / VOS COORDONNÉES</p>
+          <h2>Comment pouvons-nous vous contacter ?</h2>
+          <p class="step-description">Ces informations permettent au cabinet de traiter votre demande.</p>
+          <div class="field-group">
+            <label for="patient-name">Nom et prénom <span class="required">*</span></label>
+            <input id="patient-name" name="name" autocomplete="name" maxlength="100" required placeholder="Votre nom complet">
+          </div>
+          <div class="field-group">
+            <label for="patient-phone">Téléphone <span class="required">*</span></label>
+            <input id="patient-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="25" required placeholder="06 xx xx xx xx">
+          </div>
+          <div class="field-group">
+            <label for="patient-email">Adresse e-mail <span class="optional">(facultatif)</span></label>
+            <input id="patient-email" name="email" type="email" autocomplete="email" maxlength="160" placeholder="vous@exemple.com">
+          </div>
+        </section>
+
+        <section class="form-step" data-step="4" hidden>
+          <p class="step-label">04 / INFORMATIONS COMPLÉMENTAIRES</p>
+          <h2>Souhaitez-vous ajouter une précision ?</h2>
+          <p class="step-description">Vous pouvez laisser une note pratique au secrétariat. N’ajoutez pas de diagnostic ni de document médical.</p>
+          <div class="field-group">
+            <label for="patient-note">Note pour le secrétariat <span class="optional">(facultatif)</span></label>
+            <textarea id="patient-note" name="note" rows="4" maxlength="300" placeholder="Votre message…"></textarea>
+          </div>
+          <label class="consent-row">
+            <input type="checkbox" id="privacy-consent" required>
+            <span>J’accepte que le cabinet utilise mes coordonnées pour traiter ma demande de rendez-vous.</span>
+          </label>
+        </section>
+
+        <section class="form-step" data-step="5" hidden>
+          <p class="step-label">05 / VÉRIFICATION</p>
+          <h2>Vérifiez votre demande</h2>
+          <p class="step-description">Vérifiez les informations avant de transmettre votre demande au cabinet.</p>
+          <dl class="review-list" id="review-list"></dl>
+          <div class="pending-note" id="integration-note" hidden><strong>Réservation non activée</strong><p>La demande ne sera pas envoyée tant que la connexion du cabinet n’aura pas été vérifiée.</p></div>
+        </section>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="back-button" hidden>← Retour</button>
+          <span class="actions-spacer"></span>
+          <button type="button" class="btn btn-primary" id="continue-button">Continuer →</button>
+          <button type="submit" class="btn btn-primary" id="submit-button" hidden>Envoyer la demande →</button>
+        </div>
+      </form>
+
+      <section id="success-panel" class="success-panel" hidden>
+        <div class="success-icon">✓</div>
+        <h2>Demande transmise</h2>
+        <p id="success-message">Votre demande a été reçue par le cabinet.</p>
+        <p class="reference" id="success-reference"></p>
+        <button type="button" class="btn btn-secondary" id="new-request">Nouvelle demande</button>
       </section>
-      <section class="form-step" data-step="2" aria-labelledby="step-title-2" hidden>
-        <p class="step-label">02 / DISPONIBILITÉS</p><h3 id="step-title-2">Quand souhaitez-vous venir ?</h3><p class="step-description">Choisissez une date et une heure précises. Le cabinet vérifiera le créneau avant de confirmer votre rendez-vous.</p>
-        <div class="field-group"><label for="appointment-date">Date souhaitée</label><input id="appointment-date" name="date" type="date" required><small class="field-hint">Choisissez le jour souhaité.</small></div><div class="field-group"><label for="appointment-time">Heure souhaitée</label><select id="appointment-time" name="time" required disabled><option value="">Choisissez d’abord une date</option></select><small class="field-hint" id="time-status" aria-live="polite">Choisissez une date pour afficher les horaires proposés.</small></div>
-      </section>
-      <section class="form-step" data-step="3" aria-labelledby="step-title-3" hidden>
-        <p class="step-label">03 / VOS COORDONNÉES</p><h3 id="step-title-3">Comment pouvons-nous vous contacter ?</h3><p class="step-description">Ces informations servent à traiter votre demande et à vous envoyer les informations du rendez-vous.</p>
-        <div class="field-grid"><div class="field-group"><label for="patient-name">Nom et prénom</label><input id="patient-name" name="name" autocomplete="name" maxlength="100" required placeholder="Votre nom complet"></div><div class="field-group"><label for="patient-phone">Téléphone</label><input id="patient-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="25" required placeholder="06 xx xx xx xx"></div><div class="field-group full"><label for="patient-email">Adresse e-mail <span>(facultatif)</span></label><input id="patient-email" name="email" type="email" autocomplete="email" maxlength="160" placeholder="vous@exemple.com"></div><div class="field-group full"><label for="patient-note">Note pour le secrétariat <span>(facultatif)</span></label><textarea id="patient-note" name="note" rows="3" maxlength="300" placeholder="Information pratique uniquement (ex. préférence de contact). Ne partagez pas de dossier médical."></textarea><small class="field-hint">N'indiquez pas de diagnostic, résultat d'examen ou autre information médicale sensible.</small></div></div>
-      </section>
-      <section class="form-step" data-step="4" aria-labelledby="step-title-4" hidden>
-        <p class="step-label">04 / VÉRIFICATION</p><h3 id="step-title-4">Vérifiez votre demande</h3><p class="step-description">Vérifiez les informations avant de transmettre votre demande au cabinet.</p>
-        <dl class="review-list" id="review-list"></dl>
-        <label class="consent-row"><input type="checkbox" id="privacy-consent" required><span>J'accepte que le cabinet utilise ces coordonnées pour traiter ma demande de rendez-vous. Les informations ne doivent pas être utilisées à d'autres fins sans base appropriée.</span></label>
-        <div class="pending-note" id="integration-note"><strong>Confirmation sécurisée</strong><p>La connexion de réservation n'est pas encore configurée. Aucune demande ne sera envoyée tant que le cabinet n'aura pas activé son système.</p></div>
-      </section>
-      <div class="form-actions"><button type="button" class="btn btn-secondary" id="back-button" hidden>← Retour</button><span class="actions-spacer"></span><button type="button" class="btn btn-primary" id="continue-button">Continuer <span aria-hidden="true">→</span></button><button type="submit" class="btn btn-primary" id="submit-button" hidden>Envoyer la demande <span aria-hidden="true">→</span></button></div>
-    </form>
-    <div id="success-panel" class="success-panel" hidden><div class="success-icon" aria-hidden="true">✓</div><h3>Demande transmise</h3><p id="success-message">Votre demande a été reçue.</p><button type="button" class="btn btn-secondary" id="new-request">Nouvelle demande</button></div>
-  </section>
-  <section class="below-card"><div class="below-icon" aria-hidden="true">♡</div><div><strong>Une question avant de réserver ?</strong><p>Contactez directement le cabinet pour toute question sur les horaires, les documents à apporter ou l'accessibilité.</p></div></section>
-</main>
-<footer class="site-footer"><span>© <span id="year"></span> <span id="footer-clinic">Cabinet médical</span></span><span>Solution de réservation <strong>RENDEVO</strong></span></footer>
-</body></html>
+    </section>
+    <p class="page-footer">Réservation en ligne · <strong>RENDEVO</strong></p>
+  </main>
+</body>
+</html>
