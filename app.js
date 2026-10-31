@@ -37,7 +37,7 @@
     label.append(input, icon, text, arrow);
     serviceBox.append(label);
     input.addEventListener("change", () => {
-      $(".choice-card", serviceBox).forEach(card => card.classList.toggle("is-selected", $("input",card).checked));
+      $$(".choice-card", serviceBox).forEach(card => card.classList.toggle("is-selected", $("input",card).checked));
       $("#other-reason-wrap").hidden = input.value !== "Autre motif";
       setStep(2);
     });
